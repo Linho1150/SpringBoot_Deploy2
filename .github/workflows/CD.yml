@@ -3,7 +3,7 @@ name: CD-BeanStalk
 on:
   push:
     branches:
-      - master # action 트리거 브랜치
+      - main # action 트리거 브랜치
   workflow_dispatch: # 수동 실행 옵션
 
 jobs:
