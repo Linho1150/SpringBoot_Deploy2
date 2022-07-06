@@ -39,10 +39,10 @@ jobs:
       - name: Generate deployment package
         run: |
           mkdir -p deploy
-          cp server-app/build/libs/server-app.jar deploy/helloworld.jar #jar 파일명 설정
+          cp server-app/build/libs/helloworld.jar deploy/helloworld.jar #jar 파일명 설정 ( 2개 모두 변경 )
           cp Procfile deploy/Procfile #Procfile 경로 설정
           cp -r .ebextensions deploy/.ebextensions #ebextensions 경로 설정
-          cd deploy && zip -r todo-application-prod-label-${{steps.current-time.outputs.formattedTime}}-${{github.sha}} .
+          cd deploy && zip -r helloworld-label-${{steps.current-time.outputs.formattedTime}}-${{github.sha}} . #파일명 변경
 
       - name: Deploy Consumer to EB
         uses: einaregilsson/beanstalk-deploy@v14
@@ -51,6 +51,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: bbl-eureka #EB 어플리케이션이름 설정
           environment_name: bbleureka-env-1 #EB 환경명 설정
-          version_label: bbl-eureka-label-${{steps.current-time.outputs.formattedTime}}-${{github.sha}}
+          version_label: helloworld-label-${{steps.current-time.outputs.formattedTime}}-${{github.sha}} #Generate deployment package 맞춰서 설정 변경
           region: ap-northeast-2
-          deployment_package: deploy/bbl-eureka-label-${{steps.current-time.outputs.formattedTime}}-${{github.sha}}.zip
+          deployment_package: deploy/helloworld-label-${{steps.current-time.outputs.formattedTime}}-${{github.sha}}.zip #Generate deployment package 맞춰서 설정 변경
