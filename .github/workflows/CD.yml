@@ -49,8 +49,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }} #IAM 설정이 완료된 계정
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: todo-application-prod #EB 어플리케이션이름 설정
-          environment_name: Todoapplicationprod-env #EB 환경명 설정
-          version_label: todo-application-prod-label-${{steps.current-time.outputs.formattedTime}}-${{github.sha}}
+          application_name: bbl-eureka #EB 어플리케이션이름 설정
+          environment_name: bbleureka-env-1 #EB 환경명 설정
+          version_label: bbl-eureka-label-${{steps.current-time.outputs.formattedTime}}-${{github.sha}}
           region: ap-northeast-2
-          deployment_package: deploy/todo-application-prod-label-${{steps.current-time.outputs.formattedTime}}-${{github.sha}}.zip
+          deployment_package: deploy/bbl-eureka-label-${{steps.current-time.outputs.formattedTime}}-${{github.sha}}.zip
