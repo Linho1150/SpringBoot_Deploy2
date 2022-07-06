@@ -29,3 +29,13 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+bootJar{
+    archivesBaseName = 'HelloWorld'
+    archiveFileName = 'helloworld.jar'
+    archiveVersion = "0.0.1"
+}
+
+jar {
+    enabled = false
+}
