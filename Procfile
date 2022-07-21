@@ -1,1 +1,1 @@
-web: java -jar helloworld.jar
+web: appstart
