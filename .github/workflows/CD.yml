@@ -39,6 +39,7 @@ jobs:
           cp build/libs/*.jar deploy/application.jar
           cp Procfile deploy/Procfile
           cp -r .ebextensions deploy/.ebextensions
+          cp -r .platform deploy-dev/.platform
           cd deploy && zip -r deploy.zip .
 
       - name: Deploy to EB # (2)
