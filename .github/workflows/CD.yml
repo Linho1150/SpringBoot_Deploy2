@@ -8,24 +8,21 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest # action 스크립트가 작동될 OS
-
-    steps: # 작업 단계
-      - name: Checkout source code # 단계별 이름, 구분자로 소스를 가져옴
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
         uses: actions/checkout@v2
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v1.4.3
         with:
-          java-version: '17'
-          
+          java-version: 17
+
       - name: Grant execute permission for gradlew
-        working-directory: ./server-app  #server-app안에 SpringBoot 관련 파일이 들어있음
         run: chmod +x ./gradlew
         shell: bash
 
       - name: Build with Gradle
-        working-directory: ./server-app
         run: ./gradlew clean build
         shell: bash
 
@@ -33,24 +30,25 @@ jobs:
         uses: 1466587594/get-current-time@v2
         id: current-time
         with:
-          format: YYYYMMDDTHHmm
+          format: YYYY-MM-DDTHH-mm-ss
           utcOffset: "+09:00"
 
       - name: Generate deployment package
         run: |
           mkdir -p deploy
-          cp server-app/build/libs/helloworld.jar deploy/helloworld.jar #jar 파일명 설정 ( 2개 모두 변경 )
-          cp Procfile deploy/Procfile #Procfile 경로 설정
-          cp -r .ebextensions deploy/.ebextensions #ebextensions 경로 설정
-          cd deploy && zip -r helloworld-label-${{steps.current-time.outputs.formattedTime}}-${{github.sha}} . #파일명 변경
+          cp build/libs/*.jar deploy/application.jar
+          cp Procfile deploy/Procfile
+          cp -r .ebextensions deploy/.ebextensions
+          cp -r .platform deploy/.platform
+          cd deploy && zip -r deploy.zip .
 
-      - name: Deploy Consumer to EB
+      - name: Deploy to EB # (2)
         uses: einaregilsson/beanstalk-deploy@v14
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }} #IAM 설정이 완료된 계정
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: helloworld #EB 어플리케이션이름 설정
-          environment_name: Helloworld-env #EB 환경명 설정
-          version_label: helloworld-label-${{steps.current-time.outputs.formattedTime}}-${{github.sha}} #Generate deployment package 맞춰서 설정 변경
+          application_name: helloworld
+          environment_name: Helloworld-env
+          version_label: github-action-${{steps.current-time.outputs.formattedTime}}
           region: ap-northeast-2
-          deployment_package: deploy/helloworld-label-${{steps.current-time.outputs.formattedTime}}-${{github.sha}}.zip #Generate deployment package 맞춰서 설정 변경
+          deployment_package: deploy/deploy.zip
